@@ -1,6 +1,6 @@
 
 # general settings
-name: 102_PFT_light_SRx3_finetune_thermal
+name: 102_PFT_light_SRx3_finetune_thermal_rgb
 model_type: PFTModel
 scale: 3
 num_gpu: 1
@@ -38,7 +38,7 @@ datasets:
     type: PairedImageDatasetRGB
     dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/val_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/val_LR_bicubic
-    dataroot_gt_rgb: /teamspace/uploads/cidis-dataset/visible/train_HR_bicubic/X3
+    dataroot_gt_rgb: /teamspace/uploads/cidis-dataset/visible/val_HR_bicubic/X3
     # filename_tmpl: '{}x3'
     io_backend:
       type: disk
@@ -115,11 +115,11 @@ train:
 
   scheduler:
     type: MultiStepLR
-    milestones: [25000, 40000]
+    milestones: [1, 8]
     gamma: 0.5
 
-  total_iter: 30000
-  warmup_iter: 10000
+  total_iter: 10
+  warmup_iter: 3
 
   # losses
   pixel_opt:
@@ -128,7 +128,6 @@ train:
     reduction: mean
   cross_channel_opt:
     type: CrossChannelLoss
-    loss_weight: 1.0
     reduction: mean
 
 # validation settings
