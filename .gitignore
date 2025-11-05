@@ -100,6 +100,10 @@ venv.bak/
 # MATLAB files
 *.m
 
+# Chore
+*.pdf
+*.svg
+
 # Folders
 results
 datasets
