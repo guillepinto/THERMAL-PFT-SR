@@ -36,7 +36,7 @@ datasets:
     name: CIDIS_val
     type: PairedImageDataset
     
-    dataroot_gt: /teamspace/uploads/cidis-dataset/visible/val_HR_bicubic/X3
+    dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/val_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/val_LR_bicubic
     # filename_tmpl: '{}x3'
     io_backend:
