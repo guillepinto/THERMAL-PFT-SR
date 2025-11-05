@@ -212,8 +212,8 @@ class CrossChannelLoss(L1Loss):
         pred_y_diff = super().forward(pred[:, :, :-1, :], pred[:, :, 1:, :], weight=y_weight)
         pred_x_diff = super().forward(pred[:, :, :, :-1], pred[:, :, :, 1:], weight=x_weight)
 
-        y_diff = super().forward(mean_rgb_y, pred_y_diff weight=None)
-        x_diff = super().forward(mean_rgb_x, pred_x_diff weight=None)
+        y_diff = super().forward(mean_rgb_y, pred_y_diff, weight=None)
+        x_diff = super().forward(mean_rgb_x, pred_x_diff, weight=None)
 
         loss = y_diff + x_diff
 
