@@ -144,22 +144,22 @@ class PairedImageDatasetRGB(data.Dataset):
         self.mean = opt['mean'] if 'mean' in opt else None
         self.std = opt['std'] if 'std' in opt else None
 
-        self.gt_folder, self.lq_folder = opt['dataroot_gt'], opt['dataroot_lq']
+        self.gt_folder, self.lq_folder, self.gt_rgb_folder = opt['dataroot_gt'], opt['dataroot_lq'], opt['dataroot_gt_rgb']
         if 'filename_tmpl' in opt:
             self.filename_tmpl = opt['filename_tmpl']
         else:
             self.filename_tmpl = '{}'
 
         if self.io_backend_opt['type'] == 'lmdb':
-            self.io_backend_opt['db_paths'] = [self.lq_folder, self.gt_folder]
-            self.io_backend_opt['client_keys'] = ['lq', 'gt']
+            self.io_backend_opt['db_paths'] = [self.lq_folder, self.gt_folder, self.gt_rgb_folder]
+            self.io_backend_opt['client_keys'] = ['lq', 'gt', 'gt_rgb']
             # print(self.lq_folder, self.gt_folder)
-            self.paths = paired_paths_from_lmdb([self.lq_folder, self.gt_folder], ['lq', 'gt'])
+            self.paths = paired_paths_from_lmdb([self.lq_folder, self.gt_folder, self.gt_rgb_folder], ['lq', 'gt', 'gt_rgb'])
         elif 'meta_info_file' in self.opt and self.opt['meta_info_file'] is not None:
-            self.paths = paired_paths_from_meta_info_file([self.lq_folder, self.gt_folder], ['lq', 'gt'],
+            self.paths = paired_paths_from_meta_info_file([self.lq_folder, self.gt_folder, self.gt_rgb_folder], ['lq', 'gt', 'gt_rgb'],
                                                           self.opt['meta_info_file'], self.filename_tmpl)
         else:
-            self.paths = paired_paths_from_folder([self.lq_folder, self.gt_folder], ['lq', 'gt'], self.filename_tmpl)
+            self.paths = paired_paths_from_folder([self.lq_folder, self.gt_folder, self.gt_rgb_folder], ['lq', 'gt', 'gt_rgb'], self.filename_tmpl)
 
     def __getitem__(self, index):
         if self.file_client is None:

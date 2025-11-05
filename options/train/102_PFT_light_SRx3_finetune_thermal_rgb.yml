@@ -13,9 +13,10 @@ find_unused_parameters: true
 datasets:
   train:
     name: CIDIS_train
-    type: PairedImageDataset
+    type: PairedImageDatasetRGB
     dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/train_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/train_LR_bicubic
+    dataroot_gt_rgb: /teamspace/uploads/cidis-dataset/visible/train_HR_bicubic/X3
     # filename_tmpl: '{}x3'
     io_backend:
       type: disk
@@ -34,9 +35,10 @@ datasets:
 
   val_1:
     name: CIDIS_val
-    type: PairedImageDataset
+    type: PairedImageDatasetRGB
     dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/val_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/val_LR_bicubic
+    dataroot_gt_rgb: /teamspace/uploads/cidis-dataset/visible/train_HR_bicubic/X3
     # filename_tmpl: '{}x3'
     io_backend:
       type: disk
