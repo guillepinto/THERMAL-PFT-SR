@@ -4,17 +4,20 @@ from __future__ import print_function
 import numpy as np
 from math import ceil
 
+
 def deriveSizeFromScale(img_shape, scale):
     output_shape = []
     for k in range(2):
         output_shape.append(int(ceil(scale[k] * img_shape[k])))
     return output_shape
 
+
 def deriveScaleFromSize(img_shape_in, img_shape_out):
     scale = []
     for k in range(2):
         scale.append(1.0 * img_shape_out[k] / img_shape_in[k])
     return scale
+
 
 def triangle(x):
     x = np.array(x).astype(np.float64)
@@ -23,6 +26,7 @@ def triangle(x):
     f = np.multiply((x+1),lessthanzero) + np.multiply((1-x),greaterthanzero)
     return f
 
+
 def cubic(x):
     x = np.array(x).astype(np.float64)
     absx = np.absolute(x)
@@ -30,6 +34,7 @@ def cubic(x):
     absx3 = np.multiply(absx2, absx)
     f = np.multiply(1.5*absx3 - 2.5*absx2 + 1, absx <= 1) + np.multiply(-0.5*absx3 + 2.5*absx2 - 4*absx + 2, (1 < absx) & (absx <= 2))
     return f
+
 
 def contributions(in_length, out_length, scale, kernel, k_width):
     if scale < 1:
@@ -52,6 +57,7 @@ def contributions(in_length, out_length, scale, kernel, k_width):
     weights = weights[:, ind2store]
     indices = indices[:, ind2store]
     return weights, indices
+
 
 def imresizemex(inimg, weights, indices, dim):
     in_shape = inimg.shape
@@ -79,6 +85,7 @@ def imresizemex(inimg, weights, indices, dim):
     else:
         return outimg
 
+
 def imresizevec(inimg, weights, indices, dim):
     wshape = weights.shape
     if dim == 0:
@@ -99,6 +106,7 @@ def resizeAlongDim(A, dim, weights, indices, mode="vec"):
     else:
         out = imresizevec(A, weights, indices, dim)
     return out
+
 
 def imresize(I, scalar_scale=None, method='bicubic', output_shape=None, mode="vec"):
     if method == 'bicubic':
@@ -141,8 +149,8 @@ def imresize(I, scalar_scale=None, method='bicubic', output_shape=None, mode="ve
         B = np.squeeze(B, axis=2)
     return B
 
+
 def convertDouble2Byte(I):
     B = np.clip(I, 0.0, 1.0)
     B = 255*B
     return np.around(B).astype(np.uint8)
-
