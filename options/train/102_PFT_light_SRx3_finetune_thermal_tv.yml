@@ -1,6 +1,6 @@
 
 # general settings
-name: 102_PFT_light_SRx3_finetune_thermal
+name: 102_PFT_light_SRx3_finetune_thermal_tv
 model_type: PFTModel
 scale: 3
 num_gpu: 1
@@ -124,6 +124,10 @@ train:
     type: L1Loss
     loss_weight: 1.0
     reduction: mean
+  weighted_tv_opt:
+    type: WeightedTVLoss
+    loss_weight: 0.5
+    reduction: mean
 
 # validation settings
 val:
@@ -154,4 +158,3 @@ logger:
 dist_params:
   backend: nccl
   port: 29500
-
