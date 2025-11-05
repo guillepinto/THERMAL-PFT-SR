@@ -227,6 +227,12 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
     for gt_path in gt_paths:
         basename, ext = osp.splitext(osp.basename(gt_path))
         input_name = f'{filename_tmpl.format(basename)}{ext}'
+
+        # this line is to "trick" the loding of the data, this way we are able to
+        # use the rgb (vis) as ground truth
+        if 'vis' in input_name: 
+            input_name = input_name.replace('vis', 'th')
+            
         input_path = osp.join(input_folder, input_name)
         assert input_name in input_paths, f'{input_name} is not in {input_key}_paths.'
         gt_path = osp.join(gt_folder, gt_path)
