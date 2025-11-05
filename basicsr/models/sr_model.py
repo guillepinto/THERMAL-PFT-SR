@@ -71,6 +71,11 @@ class SRModel(BaseModel):
         else:
             self.cri_weighted_tv = None
 
+        if train_opt.get('cross_channel_opt'):
+            self.cri_cross_channel = build_loss(train_opt['cross_channel_opt']).to(self.device)
+        else:
+            self.cri_cross_channel = None
+
         if self.cri_pix is None and self.cri_perceptual is None:
             raise ValueError('Both pixel and perceptual losses are None.')
 
@@ -96,6 +101,8 @@ class SRModel(BaseModel):
         self.lq = data['lq'].to(self.device)
         if 'gt' in data:
             self.gt = data['gt'].to(self.device)
+        if 'gt_rgb' in data:
+            self.gt_rgb = data['gt_rgb'].to(self.device)
 
     def optimize_parameters(self, current_iter):
         self.optimizer_g.zero_grad()
@@ -122,6 +129,11 @@ class SRModel(BaseModel):
             l_tv = self.cri_weighted_tv(self.output)
             l_total += l_tv
             loss_dict['l_tv'] = l_tv
+
+        if self.cri_cross_channel:
+            l_cross_channel = self.cri_cross_channel(self.output, self.gt_rgb)
+            l_total += l_cross_channel
+            loss_dict['l_cross_channel'] = l_cross_channel
 
         l_total.backward()
         self.optimizer_g.step()
