@@ -170,3 +170,51 @@ class WeightedTVLoss(L1Loss):
         loss = x_diff + y_diff
 
         return loss
+
+
+@LOSS_REGISTRY.register()
+class CrossChannelLoss(L1Loss):
+    """
+    Cross Channel Loss.
+
+    It takes a pair of images. One RGB and one thermal both in high resolution.
+
+    Then we extract the gradient for each channel in an independently way
+    on the RGB image. We obtain the mean of that gradient and then compute 
+    the difference with the gradient from the thermal image.
+    """
+
+    def __init__(self, reduction='mean'):
+        if reduction not in ['mean', 'sum']:
+            raise ValueError(f'Unsupported reduction mode: {reduction}. Supported ones are: mean | sum')
+        super(CrossChannelLoss, self).__init__(reduction=reduction)
+
+    def forward(self, pred, target, weight=None):
+        if weight is None:
+            y_weight = None
+            x_weight = None
+        else:
+            y_weight = weight[:, :, :-1, :]
+            x_weight = weight[:, :, :, :-1]
+
+        r_y_diff = super().forward(target[:, 0, :-1, :], target[:, 0, 1:, :], weight=None) # [B, C, H, W]
+        r_x_diff = super().forward(target[:, 0, :, :-1], target[:, 0, :, 1:], weight=None)
+
+        g_y_diff = super().forward(target[:, 1, :-1, :], target[:, 1, 1:, :], weight=None) # [B, C, H, W]
+        g_x_diff = super().forward(target[:, 1, :, :-1], target[:, 1, :, 1:], weight=None)
+
+        b_y_diff = super().forward(target[:, 2, :-1, :], target[:, 2, 1:, :], weight=None) # [B, C, H, W]
+        b_x_diff = super().forward(target[:, 2, :, :-1], target[:, 2, :, 1:], weight=None)
+
+        mean_rgb_y = (r_y_diff+g_y_diff+b_y_diff) / 3
+        mean_rgb_x = (r_x_diff+g_x_diff+b_x_diff) / 3
+
+        pred_y_diff = super().forward(pred[:, :, :-1, :], pred[:, :, 1:, :], weight=y_weight)
+        pred_x_diff = super().forward(pred[:, :, :, :-1], pred[:, :, :, 1:], weight=x_weight)
+
+        y_diff = super().forward(mean_rgb_y, pred_y_diff weight=None)
+        x_diff = super().forward(mean_rgb_x, pred_x_diff weight=None)
+
+        loss = y_diff + x_diff
+
+        return loss
