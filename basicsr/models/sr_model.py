@@ -66,6 +66,11 @@ class SRModel(BaseModel):
         else:
             self.cri_perceptual = None
 
+        if train_opt.get('weighted_tv_opt'):
+            self.cri_weighted_tv = build_loss(train_opt['weighted_tv_opt']).to(self.device)
+        else:
+            self.cri_weighted_tv = None
+
         if self.cri_pix is None and self.cri_perceptual is None:
             raise ValueError('Both pixel and perceptual losses are None.')
 
@@ -112,6 +117,11 @@ class SRModel(BaseModel):
             if l_style is not None:
                 l_total += l_style
                 loss_dict['l_style'] = l_style
+        # weighted total variation loss
+        if self.cri_weighted_tv:
+            l_tv = self.cri_weighted_tv(self.output)
+            l_total += l_tv
+            loss_dict['l_tv'] = l_tv
 
         l_total.backward()
         self.optimizer_g.step()
