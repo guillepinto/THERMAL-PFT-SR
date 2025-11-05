@@ -213,11 +213,23 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
     Returns:
         list[str]: Returned path list.
     """
-    assert len(folders) == 2, ('The len of folders should be 2 with [input_folder, gt_folder]. '
-                               f'But got {len(folders)}')
-    assert len(keys) == 2, f'The len of keys should be 2 with [input_key, gt_key]. But got {len(keys)}'
-    input_folder, gt_folder = folders
-    input_key, gt_key = keys
+
+    # NOTEEEE: I commented this two asserts because we have to be able to load the three folders to work
+    # with the RGB image
+    # assert len(folders) == 2, ('The len of folders should be 2 with [input_folder, gt_folder]. '
+    #                            f'But got {len(folders)}')
+    # assert len(keys) == 2, f'The len of keys should be 2 with [input_key, gt_key]. But got {len(keys)}'
+
+    if len(folders) == 2:
+        input_folder, gt_folder = folders
+    elif len(folders) == 3:
+        input_folder, gt_folder, gt_rgb_folder = folders
+
+    if len(keys) == 2:
+        input_key, gt_key = keys
+    elif len(keys) == 3:
+        input_key, gt_key, gt_rgb_key = keys
+
 
     input_paths = list(scandir(input_folder))
     gt_paths = list(scandir(gt_folder))
@@ -236,7 +248,12 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
         input_path = osp.join(input_folder, input_name)
         assert input_name in input_paths, f'{input_name} is not in {input_key}_paths.'
         gt_path = osp.join(gt_folder, gt_path)
-        paths.append(dict([(f'{input_key}_path', input_path), (f'{gt_key}_path', gt_path)]))
+        
+        if len(folders) == 2:
+            paths.append(dict([(f'{input_key}_path', input_path), (f'{gt_key}_path', gt_path)]))
+        elif len(folders) == 3:
+            gt_rgb_path = osp.join(gt_rgb_folder, input_name.replace('th', 'vis'))
+            paths.append(dict([(f'{input_key}_path', input_path), (f'{gt_key}_path', gt_path), (f'{gt_rgb_key}_path', gt_rgb_path)]))
     return paths
 
 def paired_paths_from_folder2(folders, keys, filename_tmpl, task):

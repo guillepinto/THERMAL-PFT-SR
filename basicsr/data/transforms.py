@@ -116,8 +116,8 @@ def random_crop(img_gts, img_lqs, img_gt_rgbs, gt_patch_size, scale, gt_path=Non
         img_gts = [img_gts]
     if not isinstance(img_lqs, list):
         img_lqs = [img_lqs]
-    if not isinstance(imgs_gt_rgbs, list):
-        imgs_gt_rgbs = [imgs_gt_rgbs]
+    if not isinstance(img_gt_rgbs, list):
+        img_gt_rgbs = [img_gt_rgbs]
 
     # determine input type: Numpy array or Tensor
     input_type = 'Tensor' if torch.is_tensor(img_gts[0]) else 'Numpy'
@@ -166,7 +166,7 @@ def random_crop(img_gts, img_lqs, img_gt_rgbs, gt_patch_size, scale, gt_path=Non
     if len(img_lqs) == 1:
         img_lqs = img_lqs[0]
     if len(img_gt_rgbs) == 1:
-        img_gt_rgbs = imgs_gt_rgbs[0]
+        img_gt_rgbs = img_gt_rgbs[0]
     return img_gts, img_lqs, img_gt_rgbs
 
 
