@@ -1,14 +1,16 @@
-# [CVPR 2025] Progressive Focused Transformer for Single Image Super-Resolution
+# Thermal Single Image Super-Resolution
 
-This repository is an official implementation of the paper "Progressive Focused Transformer for Single Image Super-Resolution", CVPR, 2025.
+This repository is a fork of the implementation of the paper "Progressive Focused Transformer for Single Image Super-Resolution", CVPR, 2025. Here we adapted the code to:
 
-[![arXiv](https://img.shields.io/badge/Arxiv-2503.20337-AD1C18.svg?logo=arXiv)](https://arxiv.org/abs/2503.20337)
+1. Fine-tune the model for thermal images.
+2. Implement a cross-channel loss to supervise the training with RGB images inspired by "ThermalNeRF: Thermal Radiance Fields", ICCP, 2024.
+
+[![Technical report](https://img.shields.io/badge/📜-Link%20to%20paper-blue)](static/paper.pdf)
 [![Pretrained Models](https://img.shields.io/badge/Pretrained%20Models-AD1C18.svg?logo=Googledrive)](https://drive.google.com/drive/folders/1ChkxVDghFWUtJydJKLp5yssrUfm0VWfg?usp=sharing)
-[![Visual Results](https://img.shields.io/badge/Visual%20Results-AD1C18.svg?logo=Googledrive)](https://drive.google.com/drive/folders/19roY74iFLFuqZ_Uoy0jvNVNpRzBrFlyK?usp=sharing)
 
-By [Wei Long](https://scholar.google.com/citations?user=CsVTBJoAAAAJ), [Xingyu Zhou](https://scholar.google.com/citations?user=dgO3CyMAAAAJ), [Leheng Zhang](https://scholar.google.com/citations?user=DH1CJqkAAAAJ), and [Shuhang Gu](https://scholar.google.com/citations?user=-kSTt40AAAAJ).
+By [Guillermo Pinto](https://guillepinto.github.io/), [Andrea Parra](https://github.com/andpgate), Nicolás Ramírez.
 
-> **Abstract:** Transformer-based methods have achieved remarkable results in image super-resolution tasks because they can capture non-local dependencies in low-quality input images. However, this feature-intensive modeling approach is computationally expensive because it calculates the similarities between numerous features that are irrelevant to the query features when obtaining attention weights. These unnecessary similarity calculations not only degrade the reconstruction performance but also introduce significant computational overhead. How to accurately identify the features that are important to the current query features and avoid similarity calculations between irrelevant features remains an urgent problem. To address this issue, we propose a novel and effective **P**rogressive **F**ocused **T**ransformer (**PFT**) that links all isolated attention maps in the network through Progressive Focused Attention (PFA) to focus attention on the most important tokens. PFA not only enables the network to capture more critical similar features, but also significantly reduces the computational cost of the overall network by filtering out irrelevant features before calculating similarities. Extensive experiments demonstrate the effectiveness of the proposed method, achieving state-of-the-art performance on various single image super-resolution benchmarks..
+> **Abstract:** Thermal Image Super-Resolution (TISR) is crucial to enhance imagery from low-cost infrared sensors, however, its low resolution, weak contrast, and noise present significant challenges for traditional methods. In this work, we adapt the Progressive Focused Transformer (PFT), originally trained in visible-spectrum data, by fine-tuning with thermal-RGB pairs. We introduce a cross-channel loss to transfer RGB textures and a total variation (TV) loss to preserve the characteristic smoothness of thermal images. Using the CIDIS dataset, our method achieves 32,0 dB PSNR and 0,904 SSIM, outperforming bicubic interpolation and SwinFuSR. Ablation studies show that the two losses are complementary, and we observe an emergent colorizing property of thermal images when the cross-channel loss is used in isolation. This results demonstrated that leveraging Transformers designed for the visible spectrum provides an effective and computationally lightweight solution TISR.
 > 
 > <img width="800" src="figures/pft_m.png"> 
 > <br/>
