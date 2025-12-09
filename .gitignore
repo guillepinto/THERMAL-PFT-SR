@@ -101,7 +101,6 @@ venv.bak/
 *.m
 
 # Chore
-*.pdf
 *.svg
 
 # Folders
