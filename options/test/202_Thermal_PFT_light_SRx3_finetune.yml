@@ -1,6 +1,6 @@
 
 # general settings
-name: 202_Thermal_PFT_light_SRx3_finetune_thermal
+name: 202_Thermal_PFT_light_SRx3_finetune
 model_type: PFTModel
 scale: 3
 num_gpu: 1  # set num_gpu: 0 for cpu mode
@@ -12,42 +12,8 @@ datasets:
     type: PairedImageDataset
     dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/val_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/val_LR_bicubic
-    # filename_tmpl: '{}x3'
     io_backend:
       type: disk
-
-  # test_2:
-  #   name: Set14
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/Set14/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/Set14/x3
-  #   io_backend:
-  #     type: disk
-
-  # test_3:
-  #   name: BSD100
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/B100/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/B100/x3
-  #   io_backend:
-  #     type: disk
-
-  # test_4:
-  #   name: Urban100
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/Urban100/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/Urban100/x3
-  #   io_backend:
-  #     type: disk
-
-  # test_5:
-  #   name: Manga109
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/Manga109/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/Manga109/x3
-  #   io_backend:
-  #     type: disk
-
 
 # network structures
 network_g:
