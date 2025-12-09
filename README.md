@@ -3,7 +3,6 @@
 # Thermal Single Image Super-Resolution
 
 [![Technical report](https://img.shields.io/badge/📜-Link%20to%20paper-blue)](static/paper.pdf)
-[![Pretrained Models](https://img.shields.io/badge/Pretrained%20Models-AD1C18.svg?logo=Googledrive)](https://drive.google.com/drive/folders/1ChkxVDghFWUtJydJKLp5yssrUfm0VWfg?usp=sharing)
 
 [Guillermo Pinto](https://guillepinto.github.io/), [Andrea Parra](https://github.com/andpgate), Nicolás Ramírez.
 
