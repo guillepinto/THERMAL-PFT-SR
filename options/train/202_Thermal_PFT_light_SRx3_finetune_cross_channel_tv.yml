@@ -1,6 +1,6 @@
 
 # general settings
-name: 102_PFT_light_SRx3_finetune_thermal_rgb_tv_30k
+name: 202_Thermal_PFT_light_SRx3_finetune_cross_channel_tv
 model_type: PFTModel
 scale: 3
 num_gpu: 1
@@ -17,7 +17,6 @@ datasets:
     dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/train_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/train_LR_bicubic
     dataroot_gt_rgb: /teamspace/uploads/cidis-dataset/visible/train_HR_bicubic/X3
-    # filename_tmpl: '{}x3'
     io_backend:
       type: disk
 
@@ -39,42 +38,8 @@ datasets:
     dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/val_HR_bicubic/X3
     dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/val_LR_bicubic
     dataroot_gt_rgb: /teamspace/uploads/cidis-dataset/visible/val_HR_bicubic/X3
-    # filename_tmpl: '{}x3'
     io_backend:
       type: disk
-
-  # val_2:
-  #   name: Set14
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/Set14/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/Set14/x3
-  #   io_backend:
-  #     type: disk
-
-  # val_3:
-  #   name: BSD100
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/B100/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/B100/x3
-  #   io_backend:
-  #     type: disk
-
-  # val_4:
-  #   name: Urban100
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/Urban100/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/Urban100/x3
-  #   io_backend:
-  #     type: disk
-
-  # val_5:
-  #   name: Manga109
-  #   type: PairedImageDataset
-  #   dataroot_gt: datasets/TestDataSR/HR/Manga109/x3
-  #   dataroot_lq: datasets/TestDataSR/LR/LRBI/Manga109/x3
-  #   io_backend:
-  #     type: disk
-
 
 # network structures
 network_g:
