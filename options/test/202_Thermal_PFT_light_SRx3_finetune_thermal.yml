@@ -1,6 +1,6 @@
 
 # general settings
-name: 102_PFT_light_SRx3_finetune_thermal_rgb_tv_30k
+name: 202_Thermal_PFT_light_SRx3_finetune_thermal
 model_type: PFTModel
 scale: 3
 num_gpu: 1  # set num_gpu: 0 for cpu mode
@@ -73,7 +73,7 @@ network_g:
 
 # path
 path:
-  pretrain_network_g: experiments/pretrained_models/
+  pretrain_network_g: experiments/pretrained_models/202_Thermal_PFT_light_SRx3_finetune.pth
   strict_load_g: yes
   param_key_g: params_ema
 
