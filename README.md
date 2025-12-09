@@ -25,6 +25,7 @@ This repository is a fork of the implementation of the paper "Progressive Focuse
 1. [Testing](#testing)
 1. [Results](#results)
 1. [Visual Results](#visual-results)
+1. [Emerging Property](#emerging-property)
 1. [Visualization of Attention Distributions](#visualization-of-attention-distributions)
 1. [Acknowledgements](#acknowledgements)
 1. [Citation](#citation)
@@ -44,26 +45,50 @@ pip install -r requirements.txt && python setup.py develop
 
 cd ./ops_smm && ./make.sh && cd ..
 ```
-### TODO: explain here the additional steps to get ready to make inference. Also, you have to test it by yourself.
+### Preparing for Inference
+
+Lightweight PFT models were only trained for ×3 super-resolution due to computational constraints. Inference at other scales will automatically fallback to the official PFT models.
+
+1. Download the checkpoints for the models you need.
+2. For example, to run ×4 lightweight inference, download the checkpoint named `103_PFT_light_SRx4_finetune`.
+3. The original PFT pretrained models are available **[here](https://drive.google.com/drive/folders/1ChkxVDghFWUtJydJKLp5yssrUfm0VWfg?usp=sharing)**.
+   Our fine-tuned lightweight ×3 models are available in the following links: (i) **[fine-tuned (L1)](https://huggingface.co/SemilleroCV/thermal-pft-light-srx3)** and (ii) **[fine-tuned (L1 + cross-channel + TV)](https://huggingface.co/SemilleroCV/thermal-pft-light-srx3-cross-channel-tv)**.
+4. Place all downloaded checkpoints in:
+
+   ```
+   ./experiments/pretrained_models
+   ```
 
 ## Inference
-Using ```inference.py``` for fast inference on single image or multiple images within the same folder.
+Using `inference.py` for fast inference on single image or multiple images within the same folder.
 ```bash
 # For lightweight SR
-python inference.py -i inference_image.png -o results/test/ --scale 4 --task lightweight
-python inference.py -i inference_images/ -o results/test/ --scale 4 --task lightweight
+python inference.py -i inference_image.png -o results/test/ --scale 3 --task lightweight
+python inference.py -i inference_images/ -o results/test/ --scale 3 --task lightweight
 ```
 The PFT SR model processes the image ```inference_image.png``` or images within the ```inference_images/``` directory. The results will be saved in the ```results/inference/``` directory.
 
 
 ## Training
 ### Data Preparation
-- Download the training dataset [CIDIS](https://github.com/vision-cidis/CIDIS-dataset) and put it in the folder `./datasets`.
+- Download the training dataset [CIDIS](https://github.com/vision-cidis/CIDIS-dataset) and put it in the folder `./datasets` (or wherever you want, you have to specify the path later).
 
-### TODO: here you have to explain the process on how to get the training dataset (downscaling process and specific commands)
+### Dataset Preprocessing
+
+Below is the full procedure to generate the low-resolution (LR) and ground-truth (GT) pairs used for training. Apply the same process to both train and validation splits.
+
+1. Downscale the original images to the desired LR size using:
+   ```bash
+   python downscale_data.py --root_dir <input_path> --out_dir <lr_output_path> --width 64 --height 64
+   ```
+   In our experiments, LR images were downscaled to **64×64**.
+2. Generate the corresponding GT images by upscaling the LR dataset by a factor of ×3:
+   ```bash
+   python downscale_data.py --root_dir <lr_output_path> --out_dir <gt_output_path> --width 256 --height 256
+   ```
 
 ### Training Commands
-- Refer to the training configuration files in `./options/train` folder for detailed settings.
+Is **important** to update your training configuration YAMLs to point to the correct LR and GT dataset directories. Refer to the training configuration files in `./options/train` folder for detailed settings.
 
 - PFT-light (Lightweight Image Super-Resolution)
 ```bash
@@ -71,40 +96,41 @@ The PFT SR model processes the image ```inference_image.png``` or images within 
 # training dataset: CIDIS
 
 # ×3 PFT finetune, input size = 64×64, 50k iterations
-CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --use-env --nproc_per_node=1 --master_port=1145  basicsr/train.py -opt options/train/102_PFT_light_SRx3_finetune_thermal.yml --launcher pytorch
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --use-env --nproc_per_node=1 --master_port=1145  basicsr/train.py -opt options/train/202_Thermal_PFT_light_SRx3_finetune.yml --launcher pytorch
 
 # ×3 PFT finetune with cross-channel and TV, input size = 64×64, 50k iterations
-CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --use-env --nproc_per_node=1 --master_port=1145  basicsr/train.py -opt options/train/102_PFT_light_SRx3_finetune_thermal_rgb_l1_tv.yml --launcher pytorch
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --use-env --nproc_per_node=1 --master_port=1145  basicsr/train.py -opt options/train/202_Thermal_PFT_light_SRx3_finetune_cross_channel_tv.yml --launcher pytorch
 ```
 You can also run the other experiments by just updating the configuration on the `-opt` parameter.
-Note: We trained on Lightning AI x1 T4 GPU. Because of this computational constraint we only did experiments with the light version of the model.
 
+**Note:** All experiments were trained on a single NVIDIA T4 (Lightning AI). Due to this constraint, we only trained lightweight variants of PFT.
 
 ## Testing
-### Data Preparation
-- Download the testing data (Set5 + Set14 + BSD100 + Urban100 + Manga109 [[download](https://drive.google.com/file/d/1_4Fy9emAcqdiBwVM6FvbJU50LCtaBoMt/view?usp=sharing)]) and put them in the folder `./datasets`.
+### Data Preprocessing
+
+Repeat the same preprocessing steps for the **validation/testing** data (refer to [Training](https://github.com/guillepinto/PFT-SR?tab=readme-ov-file#training)):
+1. Downscale to 64×64.
+2. Upscale that version by ×3 to obtain 256×256 GT.
+3. Update LR and GT dataset paths in the testing YAML files.
 
 ### Pretrained Models
-- Download the [pretrained models](https://drive.google.com/drive/folders/1ChkxVDghFWUtJydJKLp5yssrUfm0VWfg?usp=sharing) and put them in the folder `./experiments/pretrained_models`.
-
-### TODO: Upload the models to drive or somewher so people can use them. I think Hugging Face is a good option for us.
+- Download the pretrained models and put them in the folder `./experiments/pretrained_models`.
+  
+The original PFT pretrained models are available **[here](https://drive.google.com/drive/folders/1ChkxVDghFWUtJydJKLp5yssrUfm0VWfg?usp=sharing)**.
+   Our fine-tuned lightweight ×3 models are available in the following links: (i) **[fine-tuned (L1)](https://huggingface.co/SemilleroCV/thermal-pft-light-srx3)** and (ii) **[fine-tuned (L1 + cross-channel + TV)](https://huggingface.co/SemilleroCV/thermal-pft-light-srx3-cross-channel-tv)**.
 
 ### Testing Commands
 - Refer to the testing configuration files in `./options/test` folder for detailed settings.
 - PFT-light (Lightweight Image Super-Resolution)
 ```bash
-python basicsr/test.py -opt options/test/101_PFT_light_SRx2_scratch.yml
-python basicsr/test.py -opt options/test/102_PFT_light_SRx3_finetune_thermal_rgb_l1.yml
-
+python basicsr/test.py -opt options/test/102_PFT_light_SRx3_finetune.yml
+python basicsr/test.py -opt options/test/202_Thermal_PFT_light_SRx3_finetune_thermal.yml
+python basicsr/test.py -opt options/test/202_Thermal_PFT_light_SRx3_finetune_cross_channel_tv.yml
 ```
-### TODO: Upload the options for testing from the studio in Lightning AI. To do this you before have to:
-- Change the name of the trained models to a semantically correct ones
-- Move them to the pretrained_models folder
-- Change the `pretrain_network_g` parameter in the testing options
 
 ## Results
 
-- Lightweight Image Super-Resolution
+- Lightweight Image Super-Resolution on CIDIS validation set.
 
 | Method                | Scale | PSNR ↑    | SSIM ↑   |
 |-----------------------|:-----:|----------:|---------:|
@@ -118,13 +144,11 @@ python basicsr/test.py -opt options/test/102_PFT_light_SRx3_finetune_thermal_rgb
 
 <img width="800" src="figures/qualitative-1-sota.png">
 
-
 ## Emerging Property
 
 When the model is trained using the RGB image as ground truth it tends to colorize the result departing from the thermal image.
 
 <img width="800" src="figures/qualitative-3-emerging-rgb-property.png">
-
 
 ## Visualization of Attention Distributions
 <img width="800" src="figures/attention_distributions.png">
