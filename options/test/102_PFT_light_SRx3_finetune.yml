@@ -8,45 +8,12 @@ manual_seed: 0
 
 datasets:
   test_1:
-    name: Set5
+    name: CIDIS_val
     type: PairedImageDataset
-    dataroot_gt: datasets/TestDataSR/HR/Set5/x3
-    dataroot_lq: datasets/TestDataSR/LR/LRBI/Set5/x3
+    dataroot_gt: /teamspace/uploads/cidis-dataset/thermal/val_HR_bicubic/X3
+    dataroot_lq: /teamspace/uploads/cidis-dataset/thermal/val_LR_bicubic
     io_backend:
       type: disk
-
-  test_2:
-    name: Set14
-    type: PairedImageDataset
-    dataroot_gt: datasets/TestDataSR/HR/Set14/x3
-    dataroot_lq: datasets/TestDataSR/LR/LRBI/Set14/x3
-    io_backend:
-      type: disk
-
-  test_3:
-    name: BSD100
-    type: PairedImageDataset
-    dataroot_gt: datasets/TestDataSR/HR/B100/x3
-    dataroot_lq: datasets/TestDataSR/LR/LRBI/B100/x3
-    io_backend:
-      type: disk
-
-  test_4:
-    name: Urban100
-    type: PairedImageDataset
-    dataroot_gt: datasets/TestDataSR/HR/Urban100/x3
-    dataroot_lq: datasets/TestDataSR/LR/LRBI/Urban100/x3
-    io_backend:
-      type: disk
-
-  test_5:
-    name: Manga109
-    type: PairedImageDataset
-    dataroot_gt: datasets/TestDataSR/HR/Manga109/x3
-    dataroot_lq: datasets/TestDataSR/LR/LRBI/Manga109/x3
-    io_backend:
-      type: disk
-
 
 # network structures
 network_g:
